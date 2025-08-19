@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Media Photo Downloader</title>
+    <meta name="description" content="Download high quality photos from Instagram, Facebook, Twitter and more">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --dark: #1a1a2e;
+            --light: #f8f9fa;
+            --success: #4cc9f0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            color: var(--dark);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+        }
+        
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #4361ee, #3a0ca3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        header p {
+            font-size: 1.1rem;
+            color: #555;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .downloader-box {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .input-group {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        
+        .input-group input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 5px 0 0 5px;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+        
+        .input-group input:focus {
+            border-color: var(--primary);
+        }
+        
+        .input-group button {
+            padding: 15px 25px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .input-group button:hover {
+            background: var(--secondary);
+        }
+        
+        .platforms {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+        
+        .platform {
+            background: white;
+            border-radius: 8px;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .platform:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .platform img {
+            width: 30px;
+            height: 30px;
+        }
+        
+        .result {
+            display: none;
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        .result img {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .download-btn {
+            padding: 12px 25px;
+            background: var(--success);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .download-btn:hover {
+            background: #3aa8d8;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+        
+        .feature-card {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feature-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+        
+        .feature-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .feature-card i {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+            display: inline-block;
+        }
+        
+        .ad-container {
+            margin: 30px 0;
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            border: 1px dashed #ddd;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 50px;
+            border-top: 1px solid #eee;
+            color: #666;
+        }
+        
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+            
+            .input-group {
+                flex-direction: column;
+            }
+            
+            .input-group input {
+                border-radius: 5px;
+                margin-bottom: 10px;
+            }
+            
+            .input-group button {
+                border-radius: 5px;
+                width: 100%;
+            }
+        }
+    </style>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Social Media Photo Downloader</h1>
+            <p>Download high-quality images from Instagram, Facebook, Twitter, Pinterest, and more with just one click!</p>
+        </header>
+        
+        <!-- Ad Container Top -->
+        <div class="ad-container">
+            <!-- Replace with your ad code -->
+            <div id="ad-top">
+                <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_PUBLISHER_ID"></script>
+                <!-- Your Ad Unit -->
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-YOUR_PUBLISHER_ID"
+                     data-ad-slot="YOUR_AD_SLOT_ID"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+                <script>
+                     (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+            </div>
+        </div>
+        
+        <div class="downloader-box">
+            <div class="input-group">
+                <input type="text" id="image-url" placeholder="Paste image URL here...">
+                <button id="download-btn"><i class="fas fa-download"></i> Download</button>
+            </div>
+            
+            <div class="platforms">
+                <div class="platform" data-platform="instagram">
+                    <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Instagram">
+                    <span>Instagram</span>
+                </div>
+                <div class="platform" data-platform="facebook">
+                    <img src="https://cdn-icons-png.flaticon.com/512/124/124010.png" alt="Facebook">
+                    <span>Facebook</span>
+                </div>
+                <div class="platform" data-platform="twitter">
+                    <img src="https://cdn-icons-png.flaticon.com/512/124/124021.png" alt="Twitter">
+                    <span>Twitter</span>
+                </div>
+                <div class="platform" data-platform="pinterest">
+                    <img src="https://cdn-icons-png.flaticon.com/512/124/124034.png" alt="Pinterest">
+                    <span>Pinterest</span>
+                </div>
+            </div>
+            
+            <div class="result" id="result">
+                <img id="result-image" src="" alt="Downloaded Image">
+                <button class="download-btn" id="save-btn"><i class="fas fa-save"></i> Save Image</button>
+            </div>
+        </div>
+        
+        <!-- Middle Ad Container -->
+        <div class="ad-container">
+            <!-- Replace with your ad code -->
+            <div id="ad-middle">
+                <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_PUBLISHER_ID"></script>
+                <!-- Your Ad Unit -->
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-YOUR_PUBLISHER_ID"
+                     data-ad-slot="YOUR_AD_SLOT_ID"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+                <script>
+                     (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+            </div>
+        </div>
+        
+        <div class="features">
+            <div class="feature-card">
+                <i class="fas fa-bolt"></i>
+                <h3>Fast Downloads</h3>
+                <p>Get your images downloaded in seconds with our high-speed servers and optimized download process.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-image"></i>
+                <h3>High Quality</h3>
+                <p>Download images in their original quality without any compression or watermark.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-shield-alt"></i>
+                <h3>Safe & Secure</h3>
+                <p>100% secure platform with no login required. We don't store any of your data.</p>
+            </div>
+        </div>
+        
+        <!-- Bottom Ad Container -->
+        <div class="ad-container">
+            <!-- Replace with your ad code -->
+            <div id="ad-bottom">
+                <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_PUBLISHER_ID"></script>
+                <!-- Your Ad Unit -->
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-YOUR_PUBLISHER_ID"
+                     data-ad-slot="YOUR_AD_SLOT_ID"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+                <script>
+                     (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>&copy; 2023 Social Media Photo Downloader. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const downloadBtn = document.getElementById('download-btn');
+            const imageUrlInput = document.getElementById('image-url');
+            const resultDiv = document.getElementById('result');
+            const resultImage = document.getElementById('result-image');
+            const saveBtn = document.getElementById('save-btn');
+            const platforms = document.querySelectorAll('.platform');
+            
+            // Platform click handler
+            platforms.forEach(platform => {
+                platform.addEventListener('click', function() {
+                    const platformName = this.getAttribute('data-platform');
+                    let placeholder = '';
+                    
+                    switch(platformName) {
+                        case 'instagram':
+                            placeholder = 'Paste Instagram photo URL...';
+                            break;
+                        case 'facebook':
+                            placeholder = 'Paste Facebook photo URL...';
+                            break;
+                        case 'twitter':
+                            placeholder = 'Paste Twitter photo URL...';
+                            break;
+                        case 'pinterest':
+                            placeholder = 'Paste Pinterest photo URL...';
+                            break;
+                        default:
+                            placeholder = 'Paste image URL...';
+                    }
+                    
+                    imageUrlInput.placeholder = placeholder;
+                    
+                    // Remove active class from all platforms
+                    platforms.forEach(p => p.classList.remove('active'));
+                    // Add active class to clicked platform
+                    this.classList.add('active');
+                });
+            });
+            
+            // Download button click handler
+            downloadBtn.addEventListener('click', function() {
+                const imageUrl = imageUrlInput.value.trim();
+                
+                if (!imageUrl) {
+                    alert('Please enter a valid image URL');
+                    return;
+                }
+                
+                // Simple validation for URL
+                if (!isValidUrl(imageUrl)) {
+                    alert('Please enter a valid URL starting with http:// or https://');
+                    return;
+                }
+                
+                // Show loading
+                downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+                downloadBtn.disabled = true;
+                
+                // In a real app, you would send this to a backend service
+                // For demo, we'll just display the image directly
+                setTimeout(() => {
+                    resultImage.src = imageUrl;
+                    resultDiv.style.display = 'block';
+                    
+                    // Scroll to result
+                    resultDiv.scrollIntoView({ behavior: 'smooth' });
+                    
+                    // Reset button
+                    downloadBtn.innerHTML = '<i class="fas fa-download"></i> Download';
+                    downloadBtn.disabled = false;
+                }, 1000);
+            });
+            
+            // Save button click handler
+            saveBtn.addEventListener('click', function() {
+                if (!resultImage.src) return;
+                
+                const a = document.createElement('a');
+                a.href = resultImage.src;
+                a.download = 'social-media-image-' + Date.now() + '.jpg';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            });
+            
+            // Helper function to validate URL
+            function isValidUrl(string) {
+                try {
+                    new URL(string);
+                    return true;
+                } catch (_) {
+                    return false;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
