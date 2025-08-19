@@ -1,19 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Social Media Photo Downloader</title>
-    <meta name="description" content="Download high quality photos from Instagram, Facebook, Twitter and more">
+    <title>सोशल मीडिया फोटो डाउनलोडर - Instagram, Facebook, Twitter</title>
     <style>
-        :root {
-            --primary: #4361ee;
-            --secondary: #3f37c9;
-            --dark: #1a1a2e;
-            --light: #f8f9fa;
-            --success: #4cc9f0;
-        }
-        
         * {
             margin: 0;
             padding: 0;
@@ -21,43 +12,63 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --accent: #f72585;
+            --light: #f8f9fa;
+            --dark: #1a1a2e;
+            --success: #4cc9f0;
+        }
+        
         body {
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 100vh;
             color: var(--dark);
+            padding: 20px;
+            line-height: 1.6;
         }
         
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
         }
         
         header {
             text-align: center;
             padding: 30px 0;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
         }
         
         header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            background: linear-gradient(to right, #4361ee, #3a0ca3);
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            background: linear-gradient(to right, #4361ee, #3a0ca3, #f72585);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            color: transparent;
         }
         
         header p {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             color: #555;
-            max-width: 700px;
+            max-width: 800px;
             margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .logo {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--primary);
         }
         
         .downloader-box {
             background: white;
-            border-radius: 10px;
+            border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             padding: 30px;
             margin-bottom: 30px;
@@ -65,15 +76,15 @@
         
         .input-group {
             display: flex;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
         
         .input-group input {
             flex: 1;
-            padding: 15px;
+            padding: 18px;
             border: 2px solid #ddd;
-            border-radius: 5px 0 0 5px;
-            font-size: 1rem;
+            border-radius: 8px 0 0 8px;
+            font-size: 1.1rem;
             outline: none;
             transition: all 0.3s;
         }
@@ -83,13 +94,13 @@
         }
         
         .input-group button {
-            padding: 15px 25px;
+            padding: 18px 30px;
             background: var(--primary);
             color: white;
             border: none;
-            border-radius: 0 5px 5px 0;
+            border-radius: 0 8px 8px 0;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 1.1rem;
             font-weight: bold;
             transition: all 0.3s;
         }
@@ -102,77 +113,97 @@
             display: flex;
             flex-wrap: wrap;
             gap: 15px;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             justify-content: center;
         }
         
         .platform {
             background: white;
-            border-radius: 8px;
-            padding: 15px 20px;
+            border-radius: 10px;
+            padding: 18px 25px;
             display: flex;
             align-items: center;
-            gap: 10px;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            gap: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             cursor: pointer;
             transition: all 0.3s;
+            flex: 1;
+            min-width: 200px;
+            max-width: 250px;
         }
         
         .platform:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .platform.active {
+            border: 2px solid var(--primary);
+            background: #f0f4ff;
         }
         
         .platform img {
-            width: 30px;
-            height: 30px;
+            width: 35px;
+            height: 35px;
+            object-fit: contain;
+        }
+        
+        .platform span {
+            font-weight: 600;
+            font-size: 1.1rem;
         }
         
         .result {
             display: none;
             margin-top: 30px;
             text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
         }
         
         .result img {
             max-width: 100%;
-            border-radius: 8px;
+            max-height: 400px;
+            border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
         
         .download-btn {
-            padding: 12px 25px;
+            padding: 15px 30px;
             background: var(--success);
             color: white;
             border: none;
-            border-radius: 5px;
-            font-size: 1rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
         
         .download-btn:hover {
             background: #3aa8d8;
+            transform: translateY(-3px);
         }
         
         .features {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 30px;
-            margin: 40px 0;
+            margin: 50px 0;
         }
         
         .feature-card {
             background: white;
-            border-radius: 10px;
-            padding: 30px;
+            border-radius: 15px;
+            padding: 35px 30px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
             transition: all 0.3s;
+            text-align: center;
         }
         
         .feature-card:hover {
@@ -181,43 +212,63 @@
         }
         
         .feature-card h3 {
-            font-size: 1.3rem;
-            margin-bottom: 15px;
+            font-size: 1.4rem;
+            margin: 20px 0 15px;
             color: var(--primary);
         }
         
         .feature-card p {
             color: #666;
             line-height: 1.6;
+            font-size: 1.05rem;
         }
         
         .feature-card i {
-            font-size: 2.5rem;
+            font-size: 3rem;
             color: var(--primary);
             margin-bottom: 15px;
             display: inline-block;
         }
         
         .ad-container {
-            margin: 30px 0;
+            margin: 40px 0;
             background: #f8f9fa;
-            border-radius: 8px;
-            padding: 20px;
+            border-radius: 10px;
+            padding: 25px;
             text-align: center;
-            border: 1px dashed #ddd;
+            border: 2px dashed #ddd;
+        }
+        
+        .ad-label {
+            display: block;
+            text-align: center;
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+        
+        .ad-placeholder {
+            width: 100%;
+            padding: 40px 20px;
+            background: #e9ecef;
+            border-radius: 8px;
+            color: #6c757d;
+            text-align: center;
         }
         
         footer {
             text-align: center;
-            padding: 30px 0;
+            padding: 40px 0;
             margin-top: 50px;
             border-top: 1px solid #eee;
             color: #666;
+            background: white;
+            border-radius: 15px;
         }
         
         @media (max-width: 768px) {
             header h1 {
-                font-size: 2rem;
+                font-size: 2.2rem;
             }
             
             .input-group {
@@ -225,14 +276,27 @@
             }
             
             .input-group input {
-                border-radius: 5px;
-                margin-bottom: 10px;
+                border-radius: 8px;
+                margin-bottom: 15px;
             }
             
             .input-group button {
-                border-radius: 5px;
+                border-radius: 8px;
                 width: 100%;
             }
+            
+            .platform {
+                min-width: 140px;
+                padding: 15px;
+            }
+            
+            .feature-card {
+                padding: 25px 20px;
+            }
+        }
+        
+        .hindi-text {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
     </style>
     <!-- Font Awesome for icons -->
@@ -241,32 +305,29 @@
 <body>
     <div class="container">
         <header>
-            <h1>Social Media Photo Downloader</h1>
-            <p>Download high-quality images from Instagram, Facebook, Twitter, Pinterest, and more with just one click!</p>
+            <div class="logo">
+                <i class="fas fa-download"></i>
+            </div>
+            <h1 class="hindi-text">सोशल मीडिया फोटो डाउनलोडर</h1>
+            <p class="hindi-text">Instagram, Facebook, Twitter, Pinterest और अन्य सोशल मीडिया प्लेटफॉर्म से HD क्वालिटी की तस्वीरें डाउनलोड करें</p>
         </header>
         
         <!-- Ad Container Top -->
         <div class="ad-container">
-            <!-- Replace with your ad code -->
-            <div id="ad-top">
-                <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_PUBLISHER_ID"></script>
-                <!-- Your Ad Unit -->
-                <ins class="adsbygoogle"
-                     style="display:block"
-                     data-ad-client="ca-pub-YOUR_PUBLISHER_ID"
-                     data-ad-slot="YOUR_AD_SLOT_ID"
-                     data-ad-format="auto"
-                     data-full-width-responsive="true"></ins>
-                <script>
-                     (adsbygoogle = window.adsbygoogle || []).push({});
-                </script>
+            <span class="ad-label">ADVERTISEMENT</span>
+            <div class="ad-placeholder">
+                <!-- Replace this div with your actual ad code -->
+                यहाँ आपका Google AdSense या अन्य Ad Network का कोड आएगा
+                <div style="margin-top: 15px; font-size: 0.9rem;">
+                    (Ads by Social Downloader)
+                </div>
             </div>
         </div>
         
         <div class="downloader-box">
             <div class="input-group">
-                <input type="text" id="image-url" placeholder="Paste image URL here...">
-                <button id="download-btn"><i class="fas fa-download"></i> Download</button>
+                <input type="text" id="image-url" placeholder="सोशल मीडिया फोटो का URL पेस्ट करें...">
+                <button id="download-btn"><i class="fas fa-download"></i> डाउनलोड</button>
             </div>
             
             <div class="platforms">
@@ -290,67 +351,55 @@
             
             <div class="result" id="result">
                 <img id="result-image" src="" alt="Downloaded Image">
-                <button class="download-btn" id="save-btn"><i class="fas fa-save"></i> Save Image</button>
+                <button class="download-btn" id="save-btn"><i class="fas fa-save"></i> इमेज सेव करें</button>
             </div>
         </div>
         
         <!-- Middle Ad Container -->
         <div class="ad-container">
-            <!-- Replace with your ad code -->
-            <div id="ad-middle">
-                <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_PUBLISHER_ID"></script>
-                <!-- Your Ad Unit -->
-                <ins class="adsbygoogle"
-                     style="display:block"
-                     data-ad-client="ca-pub-YOUR_PUBLISHER_ID"
-                     data-ad-slot="YOUR_AD_SLOT_ID"
-                     data-ad-format="auto"
-                     data-full-width-responsive="true"></ins>
-                <script>
-                     (adsbygoogle = window.adsbygoogle || []).push({});
-                </script>
+            <span class="ad-label">ADVERTISEMENT</span>
+            <div class="ad-placeholder">
+                <!-- Replace this div with your actual ad code -->
+                यहाँ आपका Google AdSense या अन्य Ad Network का कोड आएगा
+                <div style="margin-top: 15px; font-size: 0.9rem;">
+                    (Ads by Social Downloader)
+                </div>
             </div>
         </div>
         
         <div class="features">
             <div class="feature-card">
                 <i class="fas fa-bolt"></i>
-                <h3>Fast Downloads</h3>
-                <p>Get your images downloaded in seconds with our high-speed servers and optimized download process.</p>
+                <h3 class="hindi-text">तेज डाउनलोड</h3>
+                <p class="hindi-text">हमारी हाई-स्पीड सर्वर के साथ सेकंडों में अपनी इमेज डाउनलोड करें</p>
             </div>
             <div class="feature-card">
                 <i class="fas fa-image"></i>
-                <h3>High Quality</h3>
-                <p>Download images in their original quality without any compression or watermark.</p>
+                <h3 class="hindi-text">उच्च गुणवत्ता</h3>
+                <p class="hindi-text">बिना किसी कम्प्रेशन या वॉटरमार्क के ओरिजिनल क्वालिटी में इमेज डाउनलोड करें</p>
             </div>
             <div class="feature-card">
                 <i class="fas fa-shield-alt"></i>
-                <h3>Safe & Secure</h3>
-                <p>100% secure platform with no login required. We don't store any of your data.</p>
+                <h3 class="hindi-text">सुरक्षित</h3>
+                <p class="hindi-text">100% सुरक्षित प्लेटफॉर्म, लॉगिन की आवश्यकता नहीं, आपका डेटा सुरक्षित</p>
             </div>
         </div>
         
         <!-- Bottom Ad Container -->
         <div class="ad-container">
-            <!-- Replace with your ad code -->
-            <div id="ad-bottom">
-                <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_PUBLISHER_ID"></script>
-                <!-- Your Ad Unit -->
-                <ins class="adsbygoogle"
-                     style="display:block"
-                     data-ad-client="ca-pub-YOUR_PUBLISHER_ID"
-                     data-ad-slot="YOUR_AD_SLOT_ID"
-                     data-ad-format="auto"
-                     data-full-width-responsive="true"></ins>
-                <script>
-                     (adsbygoogle = window.adsbygoogle || []).push({});
-                </script>
+            <span class="ad-label">ADVERTISEMENT</span>
+            <div class="ad-placeholder">
+                <!-- Replace this div with your actual ad code -->
+                यहाँ आपका Google AdSense या अन्य Ad Network का कोड आएगा
+                <div style="margin-top: 15px; font-size: 0.9rem;">
+                    (Ads by Social Downloader)
+                </div>
             </div>
         </div>
     </div>
     
     <footer>
-        <p>&copy; 2023 Social Media Photo Downloader. All rights reserved.</p>
+        <p class="hindi-text">&copy; 2023 सोशल मीडिया फोटो डाउनलोडर. सर्वाधिकार सुरक्षित</p>
     </footer>
 
     <script>
@@ -370,19 +419,19 @@
                     
                     switch(platformName) {
                         case 'instagram':
-                            placeholder = 'Paste Instagram photo URL...';
+                            placeholder = 'Instagram फोटो URL पेस्ट करें...';
                             break;
                         case 'facebook':
-                            placeholder = 'Paste Facebook photo URL...';
+                            placeholder = 'Facebook फोटो URL पेस्ट करें...';
                             break;
                         case 'twitter':
-                            placeholder = 'Paste Twitter photo URL...';
+                            placeholder = 'Twitter फोटो URL पेस्ट करें...';
                             break;
                         case 'pinterest':
-                            placeholder = 'Paste Pinterest photo URL...';
+                            placeholder = 'Pinterest फोटो URL पेस्ट करें...';
                             break;
                         default:
-                            placeholder = 'Paste image URL...';
+                            placeholder = 'सोशल मीडिया फोटो URL पेस्ट करें...';
                     }
                     
                     imageUrlInput.placeholder = placeholder;
@@ -399,18 +448,18 @@
                 const imageUrl = imageUrlInput.value.trim();
                 
                 if (!imageUrl) {
-                    alert('Please enter a valid image URL');
+                    alert('कृपया एक वैध इमेज URL दर्ज करें');
                     return;
                 }
                 
                 // Simple validation for URL
                 if (!isValidUrl(imageUrl)) {
-                    alert('Please enter a valid URL starting with http:// or https://');
+                    alert('कृपया http:// या https:// से शुरू होने वाला वैध URL दर्ज करें');
                     return;
                 }
                 
                 // Show loading
-                downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+                downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> प्रोसेसिंग...';
                 downloadBtn.disabled = true;
                 
                 // In a real app, you would send this to a backend service
@@ -423,9 +472,9 @@
                     resultDiv.scrollIntoView({ behavior: 'smooth' });
                     
                     // Reset button
-                    downloadBtn.innerHTML = '<i class="fas fa-download"></i> Download';
+                    downloadBtn.innerHTML = '<i class="fas fa-download"></i> डाउनलोड';
                     downloadBtn.disabled = false;
-                }, 1000);
+                }, 1500);
             });
             
             // Save button click handler
